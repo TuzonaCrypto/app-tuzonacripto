@@ -25,8 +25,8 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
           <div className="flex items-center space-x-2 cursor-pointer" onClick={() => onNavigate("home")}>
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-sm">Ξ</span>
+            <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center shadow-lg hover:bg-red-700 transition-colors">
+              <span className="text-white font-bold text-lg">Ξ</span>
             </div>
             <h1 className="text-2xl font-bold text-gray-900">TuZonaCripto</h1>
           </div>
