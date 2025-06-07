@@ -6,8 +6,11 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "TuZonaCripto - Directorio de Negocios Cripto-Amigables",
-  description: "Encuentra comercios, servicios y profesionales que aceptan criptomonedas en tu zona",
+  title: "TuZonaCripto",
+  description: "Directorio de negocios cripto-amigables",
+  manifest: "/manifest.json",
+  themeColor: "#dc2626",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
     generator: 'v0.dev'
 }
 
