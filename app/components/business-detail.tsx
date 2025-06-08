@@ -8,6 +8,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Star, MapPin, Phone, Globe, Clock, Shield, ThumbsUp, Edit } from "lucide-react"
 import BusinessImageGallery from "./business-image-gallery"
 import OptimizedImage from "./optimized-image"
+import ProtectedAction from "./protected-action"
+import { useAuth } from "@/app/lib/auth"
 
 interface Business {
   id: string
@@ -32,18 +34,12 @@ interface BusinessDetailProps {
   isOpen: boolean
   onClose: () => void
   onImageAdded: (businessId: string, imageUrl: string) => void
-  isOwner?: boolean
 }
 
-export default function BusinessDetail({
-  business,
-  isOpen,
-  onClose,
-  onImageAdded,
-  isOwner = false,
-}: BusinessDetailProps) {
+export default function BusinessDetail({ business, isOpen, onClose, onImageAdded }: BusinessDetailProps) {
   const [activeTab, setActiveTab] = useState<"info" | "reviews" | "photos">("info")
   const [imageError, setImageError] = useState<Record<string, boolean>>({})
+  const { canEditBusiness } = useAuth()
 
   const formatWebsite = (website: string) => {
     if (!website.startsWith("http")) {
@@ -58,6 +54,8 @@ export default function BusinessDetail({
       [imageIndex]: true,
     }))
   }
+
+  const isOwner = canEditBusiness(business.id)
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -83,15 +81,19 @@ export default function BusinessDetail({
 
         <div className="space-y-6">
           {/* Galería de imágenes */}
-          <BusinessImageGallery
-            businessId={business.id}
-            images={business.images}
-            onImageAdded={(url) => onImageAdded(business.id, url)}
-            canEdit={isOwner}
-          />
+          <ProtectedAction action="edit" businessId={business.id} requireAuth={false} fallbackMessage="">
+            <BusinessImageGallery
+              businessId={business.id}
+              images={business.images}
+              onImageAdded={(url) => onImageAdded(business.id, url)}
+              canEdit={isOwner}
+            />
+          </ProtectedAction>
+
           {/* Información sobre modo demo */}
           <div className="text-xs text-gray-500 bg-blue-50 p-2 rounded-md">
             💡 Modo demo: Las imágenes se cargan desde Unsplash y se almacenan en caché para mejorar el rendimiento.
+            {!isOwner && " Solo el dueño del negocio puede agregar imágenes."}
           </div>
 
           {/* Tabs */}
@@ -185,12 +187,17 @@ export default function BusinessDetail({
                   <ThumbsUp className="w-4 h-4 mr-2" />
                   Ver reseñas
                 </Button>
-                {isOwner && (
+
+                <ProtectedAction
+                  action="edit"
+                  businessId={business.id}
+                  fallbackMessage="Solo el dueño puede editar este negocio"
+                >
                   <Button>
                     <Edit className="w-4 h-4 mr-2" />
                     Editar información
                   </Button>
-                )}
+                </ProtectedAction>
               </div>
             </div>
           )}

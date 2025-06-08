@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Menu, X, User, Info, Home, Newspaper } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import UserMenu from "./user-menu"
 
 interface HeaderProps {
   currentPage: "home" | "register" | "about" | "news"
@@ -32,28 +33,34 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            {menuItems.map((item) => {
-              const Icon = item.icon
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => onNavigate(item.id as "home" | "register" | "about" | "news")}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    currentPage === item.id
-                      ? "bg-blue-100 text-blue-700"
-                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{item.label}</span>
-                </button>
-              )
-            })}
-          </nav>
+          <div className="hidden md:flex items-center space-x-8">
+            <nav className="flex items-center space-x-8">
+              {menuItems.map((item) => {
+                const Icon = item.icon
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => onNavigate(item.id as "home" | "register" | "about" | "news")}
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      currentPage === item.id
+                        ? "bg-blue-100 text-blue-700"
+                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span>{item.label}</span>
+                  </button>
+                )
+              })}
+            </nav>
+
+            {/* User Menu */}
+            <UserMenu />
+          </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center space-x-2">
+            <UserMenu />
             <Button variant="ghost" size="sm" onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
