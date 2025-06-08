@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Menu, X, User, Info, Home, Newspaper } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import UserMenu from "./user-menu"
-import SocialDropdown from "./social-dropdown"
+import FeaturedSocial from "./featured-social"
 
 interface HeaderProps {
   currentPage: "home" | "register" | "about" | "news"
@@ -33,6 +33,12 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
             <h1 className="text-2xl font-bold text-gray-900">TuZonaCripto</h1>
           </div>
 
+          {currentPage === "home" && (
+            <div className="hidden lg:block">
+              <FeaturedSocial className="max-w-sm" />
+            </div>
+          )}
+
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             <nav className="flex items-center space-x-8">
@@ -55,16 +61,12 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
               })}
             </nav>
 
-            {/* Social Dropdown y User Menu */}
-            <div className="flex items-center space-x-3">
-              <SocialDropdown />
-              <UserMenu />
-            </div>
+            {/* User Menu */}
+            <UserMenu />
           </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center space-x-2">
-            <SocialDropdown />
             <UserMenu />
             <Button variant="ghost" size="sm" onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
