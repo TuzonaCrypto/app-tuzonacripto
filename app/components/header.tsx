@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Menu, X, User, Info, Home, Newspaper } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import UserMenu from "./user-menu"
+import SocialDropdown from "./social-dropdown"
 
 interface HeaderProps {
   currentPage: "home" | "register" | "about" | "news"
@@ -54,12 +55,16 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
               })}
             </nav>
 
-            {/* User Menu */}
-            <UserMenu />
+            {/* Social Dropdown y User Menu */}
+            <div className="flex items-center space-x-3">
+              <SocialDropdown />
+              <UserMenu />
+            </div>
           </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center space-x-2">
+            <SocialDropdown />
             <UserMenu />
             <Button variant="ghost" size="sm" onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}

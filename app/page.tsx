@@ -22,6 +22,8 @@ import NewsPage from "./components/news-page"
 import PriceTicker from "./components/price-ticker"
 import OptimizedImage from "./components/optimized-image"
 import { useAnalytics } from "./hooks/use-analytics"
+import SocialMediaLinks from "./components/social-media-links"
+import SocialDropdown from "./components/social-dropdown"
 
 interface Business {
   id: string
@@ -39,6 +41,7 @@ interface Business {
   website: string
   hours: string
   images: string[]
+  business_social?: { platform: string; username?: string; url?: string }[]
 }
 
 const mockBusinesses: Business[] = [
@@ -58,9 +61,13 @@ const mockBusinesses: Business[] = [
     website: "cafebitcoin.mx",
     hours: "7:00 - 22:00",
     images: [
-      "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&h=400&fit=crop", // Café interior moderno
-      "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&h=400&fit=crop", // Café con laptop
-      "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=600&h=400&fit=crop", // Barista preparando café
+      "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=600&h=400&fit=crop",
+    ],
+    business_social: [
+      { platform: "instagram", username: "@cafebitcoin", url: "https://instagram.com/cafebitcoin" },
+      { platform: "facebook", username: "CafeBitcoinMX", url: "https://facebook.com/CafeBitcoinMX" },
     ],
   },
   {
@@ -79,9 +86,17 @@ const mockBusinesses: Business[] = [
     website: "techcrypto.com",
     hours: "9:00 - 18:00",
     images: [
-      "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop", // Oficina tech moderna
-      "https://images.unsplash.com/photo-1551434678-e076c223a692?w=600&h=400&fit=crop", // Equipo trabajando
-      "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=600&h=400&fit=crop", // Código blockchain
+      "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1551434678-e076c223a692?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=600&h=400&fit=crop",
+    ],
+    business_social: [
+      {
+        platform: "linkedin",
+        username: "techcrypto-solutions",
+        url: "https://linkedin.com/company/techcrypto-solutions",
+      },
+      { platform: "twitter", username: "@techcryptomx", url: "https://twitter.com/techcryptomx" },
     ],
   },
   {
@@ -100,9 +115,9 @@ const mockBusinesses: Business[] = [
     website: "cryptodental.mx",
     hours: "8:00 - 20:00",
     images: [
-      "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop", // Clínica dental moderna
-      "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=600&h=400&fit=crop", // Consultorio dental
-      "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=600&h=400&fit=crop", // Dentista trabajando
+      "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -121,9 +136,9 @@ const mockBusinesses: Business[] = [
     website: "blockchainlegal.mx",
     hours: "9:00 - 19:00",
     images: [
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop", // Oficina legal moderna
-      "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&h=400&fit=crop", // Libros de derecho
-      "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600&h=400&fit=crop", // Reunión legal
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -142,9 +157,9 @@ const mockBusinesses: Business[] = [
     website: "cryptogym.mx",
     hours: "5:00 - 23:00",
     images: [
-      "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&h=400&fit=crop", // Gimnasio moderno
-      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop", // Equipos de gym
-      "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=600&h=400&fit=crop", // Personas ejercitándose
+      "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -163,9 +178,9 @@ const mockBusinesses: Business[] = [
     website: "pizzeriablockchain.mx",
     hours: "12:00 - 23:00",
     images: [
-      "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&h=400&fit=crop", // Pizza artesanal
-      "https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?w=600&h=400&fit=crop", // Pizzería interior
-      "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=600&h=400&fit=crop", // Chef haciendo pizza
+      "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -184,9 +199,9 @@ const mockBusinesses: Business[] = [
     website: "cryptobarber.mx",
     hours: "9:00 - 20:00",
     images: [
-      "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=400&fit=crop", // Barbería vintage
-      "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&h=400&fit=crop", // Barbero trabajando
-      "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&h=400&fit=crop", // Interior barbería
+      "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -205,9 +220,9 @@ const mockBusinesses: Business[] = [
     website: "digitalpharmacy.mx",
     hours: "8:00 - 22:00",
     images: [
-      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=600&h=400&fit=crop", // Farmacia moderna
-      "https://images.unsplash.com/photo-1585435557343-3b092031d8c3?w=600&h=400&fit=crop", // Medicamentos
-      "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&h=400&fit=crop", // Farmacéutico
+      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1585435557343-3b092031d8c3?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -226,9 +241,9 @@ const mockBusinesses: Business[] = [
     website: "cryptocoworking.mx",
     hours: "24/7",
     images: [
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop", // Coworking moderno
-      "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=600&h=400&fit=crop", // Espacio colaborativo
-      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=600&h=400&fit=crop", // Personas trabajando
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -247,9 +262,9 @@ const mockBusinesses: Business[] = [
     website: "cryptofashion.mx",
     hours: "10:00 - 21:00",
     images: [
-      "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&h=400&fit=crop", // Boutique elegante
-      "https://images.unsplash.com/photo-1445205170230-053b83016050?w=600&h=400&fit=crop", // Ropa de diseñador
-      "https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=600&h=400&fit=crop", // Interior tienda moda
+      "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1445205170230-053b83016050?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -268,9 +283,9 @@ const mockBusinesses: Business[] = [
     website: "cryptohotel.mx",
     hours: "24/7",
     images: [
-      "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=400&fit=crop", // Hotel lobby de lujo
-      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=600&h=400&fit=crop", // Suite de hotel
-      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop", // Habitación moderna
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -289,9 +304,9 @@ const mockBusinesses: Business[] = [
     website: "blockchainhostel.mx",
     hours: "24/7",
     images: [
-      "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=600&h=400&fit=crop", // Hostel moderno
-      "https://images.unsplash.com/photo-1586611292717-f828b167408c?w=600&h=400&fit=crop", // Área común hostel
-      "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=600&h=400&fit=crop", // Recepción hostel
+      "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1586611292717-f828b167408c?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -310,9 +325,9 @@ const mockBusinesses: Business[] = [
     website: "cryptotours.mx",
     hours: "9:00 - 18:00",
     images: [
-      "https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?w=600&h=400&fit=crop", // Tour grupo CDMX
-      "https://images.unsplash.com/photo-1518638150340-f706e86654de?w=600&h=400&fit=crop", // Centro histórico
-      "https://images.unsplash.com/photo-1512813195386-6cf811ad3542?w=600&h=400&fit=crop", // Guía turístico
+      "https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1518638150340-f706e86654de?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1512813195386-6cf811ad3542?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -331,9 +346,9 @@ const mockBusinesses: Business[] = [
     website: "aventurasblockchain.mx",
     hours: "8:00 - 17:00",
     images: [
-      "https://images.unsplash.com/photo-1551632811-561732d1e306?w=600&h=400&fit=crop", // Aventura al aire libre
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop", // Ecoturismo
-      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&h=400&fit=crop", // Actividades naturaleza
+      "https://images.unsplash.com/photo-1551632811-561732d1e306?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -352,9 +367,9 @@ const mockBusinesses: Business[] = [
     website: "cryptoarquitectos.mx",
     hours: "9:00 - 18:00",
     images: [
-      "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&h=400&fit=crop", // Estudio arquitectura
-      "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&h=400&fit=crop", // Planos arquitectónicos
-      "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=600&h=400&fit=crop", // Arquitectos trabajando
+      "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -373,9 +388,9 @@ const mockBusinesses: Business[] = [
     website: "consultoriablockchain.mx",
     hours: "9:00 - 19:00",
     images: [
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop", // Consultoría empresarial
-      "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=400&fit=crop", // Reunión de negocios
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop", // Oficina ejecutiva
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -395,9 +410,9 @@ const mockBusinesses: Business[] = [
     website: "cryptovet.mx",
     hours: "9:00 - 20:00",
     images: [
-      "https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=600&h=400&fit=crop", // Clínica veterinaria
-      "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&h=400&fit=crop", // Veterinario con mascota
-      "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=600&h=400&fit=crop", // Perro en consulta
+      "https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -417,9 +432,9 @@ const mockBusinesses: Business[] = [
     website: "cryptobakery.mx",
     hours: "7:00 - 20:00",
     images: [
-      "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&h=400&fit=crop", // Panadería artesanal
-      "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?w=600&h=400&fit=crop", // Pan fresco
-      "https://images.unsplash.com/photo-1571115764595-644a1f56a55c?w=600&h=400&fit=crop", // Panadero trabajando
+      "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1571115764595-644a1f56a55c?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -439,9 +454,9 @@ const mockBusinesses: Business[] = [
     website: "nftgallery.mx",
     hours: "11:00 - 20:00",
     images: [
-      "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&h=400&fit=crop", // Galería de arte moderna
-      "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&h=400&fit=crop", // Arte digital
-      "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=600&h=400&fit=crop", // Exposición arte
+      "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -460,9 +475,9 @@ const mockBusinesses: Business[] = [
     website: "cryptospa.mx",
     hours: "10:00 - 21:00",
     images: [
-      "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&h=400&fit=crop", // Spa moderno
-      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop", // Tratamiento spa
-      "https://images.unsplash.com/photo-1596178065887-1198b6148b2b?w=600&h=400&fit=crop", // Ambiente relajante
+      "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1596178065887-1198b6148b2b?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -482,9 +497,9 @@ const mockBusinesses: Business[] = [
     website: "cryptoauto.mx",
     hours: "8:00 - 19:00",
     images: [
-      "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600&h=400&fit=crop", // Taller mecánico
-      "https://images.unsplash.com/photo-1632823471565-1ecdf5c0a9e1?w=600&h=400&fit=crop", // Mecánico trabajando
-      "https://images.unsplash.com/photo-1609521263047-f8f205293f24?w=600&h=400&fit=crop", // Auto en taller
+      "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1632823471565-1ecdf5c0a9e1?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1609521263047-f8f205293f24?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -504,9 +519,9 @@ const mockBusinesses: Business[] = [
     website: "cryptolanguage.mx",
     hours: "9:00 - 21:00",
     images: [
-      "https://images.unsplash.com/photo-1497486751825-1233686d5d80?w=600&h=400&fit=crop", // Aula de idiomas
-      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop", // Estudiantes aprendiendo
-      "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=600&h=400&fit=crop", // Profesor enseñando
+      "https://images.unsplash.com/photo-1497486751825-1233686d5d80?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -525,9 +540,9 @@ const mockBusinesses: Business[] = [
     website: "cryptorealestate.mx",
     hours: "10:00 - 19:00",
     images: [
-      "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&h=400&fit=crop", // Casa moderna
-      "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=600&h=400&fit=crop", // Agente inmobiliario
-      "https://images.unsplash.com/photo-1448630360428-65456885c650?w=600&h=400&fit=crop", // Oficina inmobiliaria
+      "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1448630360428-65456885c650?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -547,9 +562,9 @@ const mockBusinesses: Business[] = [
     website: "cryptobooks.mx",
     hours: "10:00 - 21:00",
     images: [
-      "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&h=400&fit=crop", // Librería moderna
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop", // Libros de tecnología
-      "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=600&h=400&fit=crop", // Persona leyendo
+      "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -569,9 +584,9 @@ const mockBusinesses: Business[] = [
     website: "cryptogaming.mx",
     hours: "12:00 - 00:00",
     images: [
-      "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&h=400&fit=crop", // Gaming center
-      "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600&h=400&fit=crop", // Gamers jugando
-      "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop", // Setup gaming
+      "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -591,9 +606,9 @@ const mockBusinesses: Business[] = [
     website: "cryptoflowers.mx",
     hours: "9:00 - 20:00",
     images: [
-      "https://images.unsplash.com/photo-1487070183336-b863922373d4?w=600&h=400&fit=crop", // Florería
-      "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&h=400&fit=crop", // Arreglos florales
-      "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=600&h=400&fit=crop", // Floristería interior
+      "https://images.unsplash.com/photo-1487070183336-b863922373d4?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -613,9 +628,9 @@ const mockBusinesses: Business[] = [
     website: "cryptoyoga.mx",
     hours: "6:00 - 21:00",
     images: [
-      "https://images.unsplash.com/photo-1506629905607-d9b1e5b6e5a7?w=600&h=400&fit=crop", // Estudio de yoga
-      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop", // Clase de yoga
-      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop", // Meditación
+      "https://images.unsplash.com/photo-1506629905607-d9b1e5b6e5a7?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -635,9 +650,9 @@ const mockBusinesses: Business[] = [
     website: "cryptomusic.mx",
     hours: "10:00 - 20:00",
     images: [
-      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=400&fit=crop", // Tienda de música
-      "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=600&h=400&fit=crop", // Instrumentos musicales
-      "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&h=400&fit=crop", // Estudio de grabación
+      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -657,9 +672,9 @@ const mockBusinesses: Business[] = [
     website: "cryptobrewery.mx",
     hours: "13:00 - 01:00",
     images: [
-      "https://images.unsplash.com/photo-1436076863939-06870fe779c2?w=600&h=400&fit=crop", // Cervecería artesanal
-      "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=600&h=400&fit=crop", // Cervezas artesanales
-      "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=600&h=400&fit=crop", // Bar cervecería
+      "https://images.unsplash.com/photo-1436076863939-06870fe779c2?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=600&h=400&fit=crop",
     ],
   },
   {
@@ -679,9 +694,9 @@ const mockBusinesses: Business[] = [
     website: "cryptoadventure.mx",
     hours: "9:00 - 18:00",
     images: [
-      "https://images.unsplash.com/photo-1551632811-561732d1e306?w=600&h=400&fit=crop", // Parque aventuras
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop", // Tirolesa
-      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&h=400&fit=crop", // Actividades outdoor
+      "https://images.unsplash.com/photo-1551632811-561732d1e306?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&h=400&fit=crop",
     ],
   },
 ]
@@ -887,6 +902,9 @@ export default function CryptoBusinessDirectory() {
                 <Map className="w-4 h-4 mr-2" />
                 Mapa
               </Button>
+
+              {/* Nuevo botón de redes sociales */}
+              <SocialDropdown />
             </div>
           </div>
         </div>
@@ -959,6 +977,20 @@ export default function CryptoBusinessDirectory() {
                       </Badge>
                     ))}
                   </div>
+
+                  {business.business_social && business.business_social.length > 0 && (
+                    <div className="mb-3">
+                      <SocialMediaLinks
+                        socialLinks={business.business_social.map((social) => ({
+                          platform: social.platform,
+                          username: social.username || undefined,
+                          url: social.url || "",
+                        }))}
+                        size="sm"
+                        showLabels={false}
+                      />
+                    </div>
+                  )}
 
                   <div className="text-xs text-gray-500">Horario: {business.hours}</div>
                   <div className="flex gap-2 mt-3">
@@ -1037,7 +1069,6 @@ export default function CryptoBusinessDirectory() {
             setDetailBusiness(null)
           }}
           onImageAdded={handleAddImage}
-          isOwner={true}
         />
       )}
     </div>

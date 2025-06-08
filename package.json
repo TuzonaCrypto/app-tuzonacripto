@@ -17,6 +17,7 @@
     "@radix-ui/react-select": "latest",
     "@radix-ui/react-slot": "latest",
     "@radix-ui/react-tabs": "latest",
+    "@supabase/supabase-js": "latest",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "leaflet": "latest",

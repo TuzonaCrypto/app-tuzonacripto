@@ -10,6 +10,7 @@ import BusinessImageGallery from "./business-image-gallery"
 import OptimizedImage from "./optimized-image"
 import ProtectedAction from "./protected-action"
 import { useAuth } from "@/app/lib/auth"
+import SocialMediaLinks from "./social-media-links"
 
 interface Business {
   id: string
@@ -27,6 +28,7 @@ interface Business {
   website: string
   hours: string
   images: string[]
+  business_social?: { platform: string; username?: string; url: string }[]
 }
 
 interface BusinessDetailProps {
@@ -170,14 +172,20 @@ export default function BusinessDetail({ business, isOpen, onClose, onImageAdded
 
                 <Card>
                   <CardContent className="p-4 space-y-3">
-                    <h3 className="font-medium">Criptomonedas aceptadas</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {business.cryptoAccepted.map((crypto) => (
-                        <Badge key={crypto} variant="outline">
-                          {crypto}
-                        </Badge>
-                      ))}
-                    </div>
+                    <h3 className="font-medium">Redes sociales</h3>
+                    {business.business_social && business.business_social.length > 0 ? (
+                      <SocialMediaLinks
+                        socialLinks={business.business_social.map((social) => ({
+                          platform: social.platform,
+                          username: social.username || undefined,
+                          url: social.url,
+                        }))}
+                        size="md"
+                        showLabels={false}
+                      />
+                    ) : (
+                      <p className="text-gray-500 text-sm">No hay redes sociales configuradas</p>
+                    )}
                   </CardContent>
                 </Card>
               </div>
