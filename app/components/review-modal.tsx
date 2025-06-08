@@ -25,7 +25,7 @@ interface Business {
   phone: string
   website: string
   hours: string
-  image: string
+  images: string[] // Cambiar de 'image' a 'images'
 }
 
 interface Review {
@@ -171,7 +171,7 @@ export default function ReviewModal({ business, isOpen, onClose, onReviewSubmitt
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
             <img
-              src={business.image || "/placeholder.svg"}
+              src={business.images?.[0] || "/placeholder.svg"}
               alt={business.name}
               className="w-12 h-12 rounded-lg object-cover"
             />

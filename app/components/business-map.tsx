@@ -31,7 +31,7 @@ interface Business {
   phone: string
   website: string
   hours: string
-  image: string
+  images: string[]
 }
 
 interface BusinessMapProps {

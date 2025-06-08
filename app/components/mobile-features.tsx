@@ -1,4 +1,21 @@
-import type { Business } from "./path-to-business" // Assuming Business is imported from another file
+// Definir la interfaz Business directamente en este archivo
+interface Business {
+  id: string
+  name: string
+  category: string
+  description: string
+  address: string
+  lat: number
+  lng: number
+  rating: number
+  reviews: number
+  verified: boolean
+  cryptoAccepted: string[]
+  phone: string
+  website: string
+  hours: string
+  images: string[]
+}
 
 // Geolocalización
 const getUserLocation = () => {

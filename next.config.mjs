@@ -7,8 +7,12 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+    domains: ['images.unsplash.com', 'picsum.photos'],
+    unoptimized: true
   },
+  experimental: {
+    esmExternals: 'loose'
+  }
 }
 
 export default nextConfig

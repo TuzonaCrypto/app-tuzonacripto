@@ -21,6 +21,7 @@ import AboutPage from "./components/about-page"
 import NewsPage from "./components/news-page"
 import PriceTicker from "./components/price-ticker"
 import OptimizedImage from "./components/optimized-image"
+import { useAnalytics } from "./hooks/use-analytics"
 
 interface Business {
   id: string
@@ -715,6 +716,9 @@ export default function CryptoBusinessDirectory() {
   const [showDetailModal, setShowDetailModal] = useState(false)
   const [detailBusiness, setDetailBusiness] = useState<Business | null>(null)
 
+  // Hook de analytics
+  const analytics = useAnalytics()
+
   useEffect(() => {
     let filtered = businesses
 
@@ -725,14 +729,20 @@ export default function CryptoBusinessDirectory() {
           business.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
           business.address.toLowerCase().includes(searchTerm.toLowerCase()),
       )
+
+      // Rastrear búsquedas
+      analytics.trackSearch(searchTerm, filtered.length)
     }
 
     if (selectedCategory !== "Todos") {
       filtered = filtered.filter((business) => business.category === selectedCategory)
+
+      // Rastrear filtros de categoría
+      analytics.trackFilter(selectedCategory)
     }
 
     setFilteredBusinesses(filtered)
-  }, [searchTerm, selectedCategory, businesses])
+  }, [searchTerm, selectedCategory, businesses, analytics])
 
   const getCryptoIcon = (crypto: string) => {
     switch (crypto) {
@@ -769,6 +779,19 @@ export default function CryptoBusinessDirectory() {
       ...prev,
       [`${businessId}-${imageIndex}`]: true,
     }))
+  }
+
+  const handleBusinessClick = (business: Business) => {
+    // Rastrear visualización de negocio
+    analytics.trackBusinessView(business.id, business.name)
+    setDetailBusiness(business)
+    setShowDetailModal(true)
+  }
+
+  const handleViewModeChange = (mode: "grid" | "map") => {
+    setViewMode(mode)
+    // Rastrear cambio de vista
+    analytics.trackMap(`view_mode_${mode}`)
   }
 
   // Renderizar página según la navegación
@@ -851,12 +874,16 @@ export default function CryptoBusinessDirectory() {
               <Button
                 variant={viewMode === "grid" ? "default" : "outline"}
                 size="sm"
-                onClick={() => setViewMode("grid")}
+                onClick={() => handleViewModeChange("grid")}
               >
                 <Grid className="w-4 h-4 mr-2" />
                 Lista
               </Button>
-              <Button variant={viewMode === "map" ? "default" : "outline"} size="sm" onClick={() => setViewMode("map")}>
+              <Button
+                variant={viewMode === "map" ? "default" : "outline"}
+                size="sm"
+                onClick={() => handleViewModeChange("map")}
+              >
                 <Map className="w-4 h-4 mr-2" />
                 Mapa
               </Button>
@@ -890,10 +917,7 @@ export default function CryptoBusinessDirectory() {
                     )}
                     <div
                       className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
-                      onClick={() => {
-                        setDetailBusiness(business)
-                        setShowDetailModal(true)
-                      }}
+                      onClick={() => handleBusinessClick(business)}
                     >
                       <Button size="sm" variant="secondary">
                         Ver detalles
@@ -949,14 +973,7 @@ export default function CryptoBusinessDirectory() {
                     >
                       Ver Reseñas
                     </Button>
-                    <Button
-                      size="sm"
-                      className="flex-1"
-                      onClick={() => {
-                        setDetailBusiness(business)
-                        setShowDetailModal(true)
-                      }}
-                    >
+                    <Button size="sm" className="flex-1" onClick={() => handleBusinessClick(business)}>
                       Detalles
                     </Button>
                   </div>
@@ -1020,7 +1037,7 @@ export default function CryptoBusinessDirectory() {
             setDetailBusiness(null)
           }}
           onImageAdded={handleAddImage}
-          isOwner={true} // Para demostración, asumimos que el usuario es dueño
+          isOwner={true}
         />
       )}
     </div>
